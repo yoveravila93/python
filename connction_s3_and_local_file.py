@@ -20,20 +20,21 @@ file = ""
 comparacion = []
 
 #coneection by client
+s3 =boto3.resource('s3')
+Bucket = s3.Bucket(BUCKET)
 session = boto3.Session(profile_name='default')
 s3Client = session.client('s3',region_name=region)
 s3Resource = session.resource('s3', region_name=region)   
 
 #connect bucket s3
-Bucket =s3Resource.Bucket(BUCKET)
+#Bucket = s3.Bucket(BUCKET)
 for obj in Bucket.objects.all():
     buck.append(obj.key)
     print (buck)
-    
 #connect local folder
 ruta = ([arch for arch in listdir(local_file) if isfile(join(local_file, arch))])
 
-#save file local in a list
+#it code see the file in local folder that are not in the bucket
 for  item in ruta:
     if not item in buck:
         comparacion.append(item)
@@ -42,8 +43,8 @@ for  item in ruta:
 for file in comparacion:
     rutas = local_file + "\\" + file
     def upload_file():
-        s3Resource.Bucket(BUCKET).upload_file(rutas, file)
-        print ("creating files")
+        s3.Bucket(BUCKET).upload_file(rutas, file)
+        print ("creating files: " + file)
 
     upload_file()
     
@@ -58,14 +59,13 @@ for  item in buck:
 for file in delet:
     def delete_object():
         s3Client.delete_object(Bucket=BUCKET, Key=file)
-        print ("deleting files")
+        print ("deleting files: " + file)
     delete_object()
 
 #update files
 for file in ruta:
     rutas = local_file + "\\" + file
     def update_file():
-        s3Resource.Bucket(BUCKET).upload_file(rutas, file)
-        print ("update files")
+        s3.Bucket(BUCKET).upload_file(rutas, file)
 
     update_file()

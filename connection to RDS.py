@@ -15,7 +15,7 @@ engine = create_engine("postgresql://root:Madara19@db-connet.ckfoflpkrdae.us-eas
 connect_db_connect = engine.connect()
 connect_db_connect = connect_db_connect.execution_options(isolation_level="READ COMMITTED")
 
-chunksize = 1000
+
 data = pandas.read_sql("""select * from "tbl_indicator" order by 1""", connect_db_postdevso)
 
-data.to_sql('tbl_country', connect_db_connect, schema='public', if_exists='append', index=False, chunksize=chunksize)
+data.to_sql('tbl_country', connect_db_connect, schema='public', if_exists='append', index=False, chunksize=1000)
